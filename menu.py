@@ -7,7 +7,7 @@ from setup_master_database import setup_master_database
 setup_master_database()
 list_of_planets = load_planet_database()
 
-def Jacob(time):
+def Jacob(time_increment):
     '''
     --------------------------------------------------------------------------------
     This is a function to test the GUI:
@@ -19,8 +19,8 @@ def Jacob(time):
     '''
     # Earth = planet(5.972 * math.pow(10, 24), 149598262.00, 0.017, 147098291.00, 365.25636, 0, -0.196535244, 1.796767421, 1.749518042, Sun)
     # Mars = planet(5.972 * math.pow(10, 24), 227943823.5, 0.093, 206655215, 687.0106875, 0.032288591, 0.865308761, 5.865019079, 0.7309438907, Sun)
-    list_of_planets[0].simulate_orbit_continuous(time)
-    list_of_planets[1].simulate_orbit_continuous(time)
+    list_of_planets[0].simulate_orbit(time_increment)
+    list_of_planets[1].simulate_orbit(time_increment)
     results = [list_of_planets[1].xPos, list_of_planets[1].yPos, list_of_planets[1].zPos, list_of_planets[0].xPos, list_of_planets[0].yPos, list_of_planets[0].zPos]
     return results
 
@@ -49,11 +49,11 @@ def display():
     #    mercury = vp.sphere(color = vp.vector(.3,.3,.3), pos = vp.vector(celestpos[0] / 10000000,celestpos[0] / 10000000,celestpos[0] / 10000000), make_trail=True, trail_type="points", interval=10, retain=5)
     #    moon = vp.sphere(color = vp.vector(.3,.3,.3), pos = vp.vector(Moon.xPos / 10000000, Moon.yPos / 10000000,0))
     vp.scene.append_to_caption('\n')
-    sl = vp.slider(min=-1000, max=1000, value=1000, length=675, bind=setspeed)
+    sl = vp.slider(min=-20, max=20, value=1, length=675, bind=setspeed)
     while True:
         while pause == False:
 
-            celestpos = Jacob(t.value)
+            celestpos = Jacob(sl.value)
             # simulates motion
             #            Moon.simulate_orbit(i, 0)
             #            Earth.simulate_orbit(t, 0)
@@ -66,13 +66,10 @@ def display():
             #       moon.pos = vp.vector(Moon.xPos / 10000000, Moon.yPos / 10000000,0)
             if (sl.value > 0):
                 t.value += 1
-                time.sleep(1 / sl.value)
-            elif (sl.value > 0):
-                t.value -= 1
-                time.sleep(math.abs(1 / sl.value))
+                time.sleep(0.01)
             else:
-                while (t.value == 0):
-                    time.sleep(.01)
+                t.value -= 1
+                time.sleep(.01)
 
 
 def display_at(date):
