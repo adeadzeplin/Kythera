@@ -19,7 +19,6 @@ def simulate_next_planet_iteration(t): #simulates all the planets for an increme
 
 def display():
     vp.scene.append_to_title('\n')
-    vp.button(text="credits", bind=showat, pos=vp.scene.title_anchor)
     vp.scene.append_to_caption('\n')
     vp.button(text="Pause", bind=Pause)
     vp.button(text="Play", bind=Play)
