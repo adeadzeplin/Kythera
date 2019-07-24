@@ -130,13 +130,13 @@ vp.scene.width = 800
 vp.scene.height = 800
 vp.scene.range = 1.3
 vp.scene.title = "ANTIKYTHERA\n"
-vp.button(text="credits", bind=credits, pos=vp.scene.title_anchor)
 
 
 vp.button(text="display", bind=display, pos=vp.scene.title_anchor)
 vp.scene.append_to_title('\n')
 vp.button(text="display at", bind=showat, pos=vp.scene.title_anchor)
 vp.scene.append_to_title('\n')
+vp.button(text="credits", bind=credits, pos=vp.scene.title_anchor)
 vp.winput(bind=setday, pos=vp.scene.title_anchor)
 vp.winput(bind=setmonth, pos=vp.scene.title_anchor)
 vp.winput(bind=setyear, pos=vp.scene.title_anchor)
