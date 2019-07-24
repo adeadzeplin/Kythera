@@ -3,6 +3,7 @@ from load_star_database import load_star_database
 from load_planet_database import load_planet_database
 import vpython as vp
 import time
+import datetime
 from setup_master_database import setup_master_database
 setup_master_database()
 list_of_planets = load_planet_database()
@@ -39,12 +40,12 @@ def display():
     vp.scene.append_to_caption('\n')
     t = vp.slider(min=-20000, max=20000, value=1, length=675, bind=setyear)
     vp.scene.append_to_caption('\n')
-    print("B")
     celestpos = Jacob(t.value)
     # makes the sun shine
     vp.sphere(color=vp.color.yellow, emissive=True)
     vp.local_light(pos=vp.vector(0, 0, 0), color=vp.color.yellow)
     ################################## NEW #####################################
+    current_date = datetime.date.today()
     for planet in list_of_planets:
         planet.simulate_orbit(0)
         list_of_planet_models.append(vp.sphere(textures=vp.textures.earth,
@@ -70,6 +71,8 @@ def display():
         while pause == False:
 
             simulate_next_planet_iteration(sl.value)
+            date_increment = datetime.timedelta(days = sl.value)
+
             # simulates motion
             #            Moon.simulate_orbit(i, 0)
             #            Earth.simulate_orbit(t, 0)
@@ -81,12 +84,14 @@ def display():
             #            mercury.pos = vp.vector(Mercury.xPos / 10000000, Mercury.yPos / 10000000,0)
             #       moon.pos = vp.vector(Moon.xPos / 10000000, Moon.yPos / 10000000,0)
             if (sl.value > 0):
+                current_date += date_increment
                 t.value += 1
                 time.sleep(0.01)
             else:
+                current_date -= date_increment
                 t.value -= 1
                 time.sleep(.01)
-
+            print(current_date)
 
 def display_at(date):
     # insert planets
@@ -161,4 +166,3 @@ vp.winput(bind=setday, pos=vp.scene.title_anchor)
 vp.winput(bind=setmonth, pos=vp.scene.title_anchor)
 vp.winput(bind=setyear, pos=vp.scene.title_anchor)
 vp.scene.append_to_title('\n')
-print("A")
