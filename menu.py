@@ -55,6 +55,12 @@ def display():
     while True:
         while pause == False:
 
+            global guidate
+            guiday = str(current_date.day)
+            guimonth = str(current_date.day)
+            guiyear = str(current_date.year)
+            guidate.text = guiday + "/" + guimonth + "/" + guiyear
+            
             simulate_next_planet_iteration(sl.value)
             date_increment = datetime.timedelta(days = sl.value)
 
@@ -140,3 +146,6 @@ vp.winput(bind=setday, pos=vp.scene.title_anchor)
 vp.winput(bind=setmonth, pos=vp.scene.title_anchor)
 vp.winput(bind=setyear, pos=vp.scene.title_anchor)
 vp.scene.append_to_title('\n')
+
+
+guidate = vp.wtext(text="date")
