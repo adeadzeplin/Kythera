@@ -27,7 +27,6 @@ def Jacob(time_increment):
 
 def display():
     vp.scene.append_to_title('\n')
-    vp.button(text="credits", bind=showat, pos=vp.scene.title_anchor)
     vp.scene.append_to_caption('\n')
     vp.button(text="Pause", bind=Pause)
     vp.scene.append_to_caption('\n')
