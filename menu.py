@@ -15,7 +15,7 @@ def simulate_next_planet_iteration(t): #simulates all the planets for an increme
     for planet in list_of_planets:
         planet.simulate_orbit(t)
         list_of_planet_models[list_of_planets.index(planet)].pos = vp.vector(planet.xPos / 10000000, planet.yPos / 10000000, planet.zPos / 10000000)
-        list_of_planet_text[list_of_planets.index(planet)].pos = list_of_planet_models[list_of_planets.index(planet)].pos + list_of_planet_models[list_of_planets.index(planet)].axis
+        list_of_planet_text[list_of_planets.index(planet)].pos = list_of_planet_models[list_of_planets.index(planet)].pos
 
 def display():
     vp.scene.append_to_title('\n')
@@ -28,13 +28,13 @@ def display():
     vp.sphere(color=vp.color.yellow, emissive=True)
     vp.local_light(pos=vp.vector(0, 0, 0), color=vp.color.yellow)
     ################################## NEW #####################################
-    current_date = datetime.date.today()
+    current_date = datetime.datetime.today()
     for planet in list_of_planets:
         planet.simulate_orbit(0)
         list_of_planet_models.append(vp.sphere(textures=vp.textures.earth,
                          pos=vp.vector(planet.xPos / 10000000, planet.yPos / 10000000, planet.zPos / 10000000),
                          make_trail=True, trail_type="points", interval=10, retain=25))
-        list_of_planet_text.append(vp.text(text = planet.name, pos = list_of_planet_models[list_of_planets.index(planet)].pos + list_of_planet_models[list_of_planets.index(planet)].axis, height = 0.5, color = vp.color.white, billboard = True, emissive = True))
+        list_of_planet_text.append(vp.label(text = planet.name, pos = list_of_planet_models[list_of_planets.index(planet)].pos, height = 15, yoffset = 50, space = 30, border = 4, font = 'sans'))
     ############################################################################
     """
     # creates the visual representation of the planets
@@ -44,7 +44,6 @@ def display():
     mars = vp.sphere(color=vp.vector(1, 0, 0),
                      pos=vp.vector(celestpos[3] / 10000000, celestpos[4] / 10000000, celestpos[5] / 10000000),
                      make_trail=True, trail_type="points", interval=10, retain=25)
-
     #    venus = vp.sphere(color = vp.vector(1,1,.8), pos = vp.vector(celestpos[0] / 10000000,celestpos[0] / 10000000,celestpos[0] / 10000000), make_trail=True, trail_type="points", interval=10, retain=10)
     #    mercury = vp.sphere(color = vp.vector(.3,.3,.3), pos = vp.vector(celestpos[0] / 10000000,celestpos[0] / 10000000,celestpos[0] / 10000000), make_trail=True, trail_type="points", interval=10, retain=5)
     #    moon = vp.sphere(color = vp.vector(.3,.3,.3), pos = vp.vector(Moon.xPos / 10000000, Moon.yPos / 10000000,0))
@@ -53,15 +52,14 @@ def display():
     sl = vp.slider(min=-20, max=20, value=1, length=675, bind=setspeed)
     while True:
         while pause == False:
-
             global guidate
             guiday = str(current_date.day)
-            guimonth = str(current_date.day)
+            guimonth = str(current_date.month)
             guiyear = str(current_date.year)
             guidate.text = guiday + "/" + guimonth + "/" + guiyear
-            
+
             simulate_next_planet_iteration(sl.value)
-            date_increment = datetime.timedelta(days = sl.value)
+            date_increment = datetime.timedelta(days = math.floor(sl.value), hours = (sl.value - math.floor(sl.value)) * 24)
 
             # simulates motion
             #            Moon.simulate_orbit(i, 0)
@@ -74,13 +72,13 @@ def display():
             #            mercury.pos = vp.vector(Mercury.xPos / 10000000, Mercury.yPos / 10000000,0)
             #       moon.pos = vp.vector(Moon.xPos / 10000000, Moon.yPos / 10000000,0)
             if (sl.value > 0):
-                current_date += date_increment
-                t.value += 1
-                time.sleep(0.01)
+                time.sleep(.01/sl.value)
+            elif(sl.value < 0):
+                time.sleep(.01/(-sl.value))
             else:
-                current_date -= date_increment
-                t.value -= 1
                 time.sleep(.01)
+
+            current_date = current_date + date_increment
 
 
 def showat():
@@ -145,6 +143,5 @@ vp.winput(bind=setday, pos=vp.scene.title_anchor)
 vp.winput(bind=setmonth, pos=vp.scene.title_anchor)
 vp.winput(bind=setyear, pos=vp.scene.title_anchor)
 vp.scene.append_to_title('\n')
-
 
 guidate = vp.wtext(text="date")
