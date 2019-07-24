@@ -116,12 +116,22 @@ def Play():
     global pause
     pause  = False
 
+def credits():
+    t0 = vp.text(text='Jacob Jones', pos=vp.vec(5,5,0),color=vp.color.cyan, billboard=True, emissive=True)
+    t1 = vp.text(text='Ralph Ghannam', pos=vp.vec(3,3,0),color=vp.color.cyan, billboard=True, emissive=True)
+    t2 = vp.text(text='Matthew Cosman', pos=vp.vec(1,1,0),color=vp.color.cyan, billboard=True, emissive=True)
+    t3 = vp.text(text='Ameer Noufal', pos=vp.vec(-1,-1,0),color=vp.color.cyan, billboard=True, emissive=True)
+    t4 = vp.text(text='Akshar Patel', pos=vp.vec(-3,-3,0),color=vp.color.cyan, billboard=True, emissive=True)
+    t5 = vp.text(text='Daniel Smith De-Paz', pos=vp.vec(-5,-5,0),color=vp.color.cyan, billboard=True, emissive=True)
+    t6 = vp.text(text='Shail Patel ', pos=vp.vec(-7,-7,0),color=vp.color.cyan, billboard=True, emissive=True)
 
 
 vp.scene.width = 800
 vp.scene.height = 800
 vp.scene.range = 1.3
 vp.scene.title = "ANTIKYTHERA\n"
+vp.button(text="credits", bind=credits, pos=vp.scene.title_anchor)
+
 
 vp.button(text="display", bind=display, pos=vp.scene.title_anchor)
 vp.scene.append_to_title('\n')
