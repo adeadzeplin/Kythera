@@ -23,7 +23,6 @@ def display():
     vp.button(text="Pause", bind=Pause)
     vp.button(text="Play", bind=Play)
     vp.scene.append_to_caption('\n')
-    t = vp.slider(min=-20000, max=20000, value=1, length=675, bind=setyear)
     vp.scene.append_to_caption('\n')
     # makes the sun shine
     vp.sphere(color=vp.color.yellow, emissive=True)
