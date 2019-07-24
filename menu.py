@@ -6,6 +6,7 @@ import time
 from setup_master_database import setup_master_database
 setup_master_database()
 list_of_planets = load_planet_database()
+list_of_planet_models = []
 
 def Jacob(time_increment):
     '''
@@ -24,11 +25,17 @@ def Jacob(time_increment):
     results = [list_of_planets[1].xPos, list_of_planets[1].yPos, list_of_planets[1].zPos, list_of_planets[0].xPos, list_of_planets[0].yPos, list_of_planets[0].zPos]
     return results
 
+def simulate_next_planet_iteration(t): #simulates all the planets for an increment t
+    for planet in list_of_planets:
+        planet.simulate_orbit(t)
+        list_of_planet_models[list_of_planets.index(planet)].pos = vp.vector(planet.xPos / 10000000, planet.yPos / 10000000, planet.zPos / 10000000)
 
 def display():
     vp.scene.append_to_title('\n')
+    vp.button(text="credits", bind=showat, pos=vp.scene.title_anchor)
     vp.scene.append_to_caption('\n')
     vp.button(text="Pause", bind=Pause)
+    vp.button(text="Play", bind=Play)
     vp.scene.append_to_caption('\n')
     t = vp.slider(min=-20000, max=20000, value=1, length=675, bind=setyear)
     vp.scene.append_to_caption('\n')
@@ -37,6 +44,14 @@ def display():
     # makes the sun shine
     vp.sphere(color=vp.color.yellow, emissive=True)
     vp.local_light(pos=vp.vector(0, 0, 0), color=vp.color.yellow)
+    ################################## NEW #####################################
+    for planet in list_of_planets:
+        planet.simulate_orbit(0)
+        list_of_planet_models.append(vp.sphere(textures=vp.textures.earth,
+                         pos=vp.vector(planet.xPos / 10000000, planet.yPos / 10000000, planet.zPos / 10000000),
+                         make_trail=True, trail_type="points", interval=10, retain=25))
+    ############################################################################
+    """
     # creates the visual representation of the planets
     earth = vp.sphere(texture=vp.textures.earth,
                       pos=vp.vector(celestpos[0] / 10000000, celestpos[1] / 10000000, celestpos[2] / 10000000),
@@ -44,22 +59,24 @@ def display():
     mars = vp.sphere(color=vp.vector(1, 0, 0),
                      pos=vp.vector(celestpos[3] / 10000000, celestpos[4] / 10000000, celestpos[5] / 10000000),
                      make_trail=True, trail_type="points", interval=10, retain=25)
+
     #    venus = vp.sphere(color = vp.vector(1,1,.8), pos = vp.vector(celestpos[0] / 10000000,celestpos[0] / 10000000,celestpos[0] / 10000000), make_trail=True, trail_type="points", interval=10, retain=10)
     #    mercury = vp.sphere(color = vp.vector(.3,.3,.3), pos = vp.vector(celestpos[0] / 10000000,celestpos[0] / 10000000,celestpos[0] / 10000000), make_trail=True, trail_type="points", interval=10, retain=5)
     #    moon = vp.sphere(color = vp.vector(.3,.3,.3), pos = vp.vector(Moon.xPos / 10000000, Moon.yPos / 10000000,0))
+    """
     vp.scene.append_to_caption('\n')
     sl = vp.slider(min=-20, max=20, value=1, length=675, bind=setspeed)
     while True:
         while pause == False:
 
-            celestpos = Jacob(sl.value)
+            simulate_next_planet_iteration(sl.value)
             # simulates motion
             #            Moon.simulate_orbit(i, 0)
             #            Earth.simulate_orbit(t, 0)
             #            Venus.simulate_orbit(t, 0)
             #            Mercury.simulate_orbit(t, 0)
-            earth.pos = vp.vector(celestpos[0] / 10000000, celestpos[1] / 10000000, celestpos[2] / 10000000)
-            mars.pos = vp.vector(celestpos[3] / 10000000, celestpos[4] / 10000000, celestpos[5] / 10000000)
+            #earth.pos = vp.vector(celestpos[0] / 10000000, celestpos[1] / 10000000, celestpos[2] / 10000000)
+            #mars.pos = vp.vector(celestpos[3] / 10000000, celestpos[4] / 10000000, celestpos[5] / 10000000)
             #            venus.pos = vp.vector(Venus.xPos / 10000000,Venus.yPos / 10000000,0)
             #            mercury.pos = vp.vector(Mercury.xPos / 10000000, Mercury.yPos / 10000000,0)
             #       moon.pos = vp.vector(Moon.xPos / 10000000, Moon.yPos / 10000000,0)
@@ -91,17 +108,7 @@ def display_at(date):
                      pos=vp.vector(celestpos[3] / 10000000, celestpos[4] / 10000000, celestpos[5] / 10000000),
                      make_trail=True, trail_type="points", interval=10, retain=25)
 
-def credits():
-    t0 = vp.text(text='Jacob Jones', pos=vp.vec(5,5,0),color=vp.color.cyan, billboard=True, emissive=True)
-    t1 = vp.text(text='Ralph Ghannam', pos=vp.vec(3,3,0),color=vp.color.cyan, billboard=True, emissive=True)
-    t2 = vp.text(text='Matthew Cosman', pos=vp.vec(1,1,0),color=vp.color.cyan, billboard=True, emissive=True)
-    t3 = vp.text(text='Ameer Noufal', pos=vp.vec(-1,-1,0),color=vp.color.cyan, billboard=True, emissive=True)
-    t4 = vp.text(text='Akshar', pos=vp.vec(-3,-3,0),color=vp.color.cyan, billboard=True, emissive=True)
-    t5 = vp.text(text='Daniel', pos=vp.vec(-5,-5,0),color=vp.color.cyan, billboard=True, emissive=True)
-    t6 = vp.text(text='Shail Patel ', pos=vp.vec(-7,-7,0),color=vp.color.cyan, billboard=True, emissive=True)
 
-
-    
 def showat():
     global day
     display_at(day)
@@ -131,10 +138,13 @@ t = 0
 day = 0
 
 
-def Pause(a):
+def Pause():
     global pause
-    pause = not pause
+    pause = True
 
+def Play():
+    global pause
+    pause  = False
 
 
 
@@ -147,8 +157,6 @@ vp.button(text="display", bind=display, pos=vp.scene.title_anchor)
 vp.scene.append_to_title('\n')
 vp.button(text="display at", bind=showat, pos=vp.scene.title_anchor)
 vp.scene.append_to_title('\n')
-vp.scene.append_to_title('\n')
-vp.button(text="credits", bind=credits, pos=vp.scene.title_anchor)
 vp.winput(bind=setday, pos=vp.scene.title_anchor)
 vp.winput(bind=setmonth, pos=vp.scene.title_anchor)
 vp.winput(bind=setyear, pos=vp.scene.title_anchor)
