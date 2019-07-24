@@ -105,10 +105,10 @@ class satellite(body): # STILL NEEDS MODIFICATIONS
         self.baseAngle = baseAngle # this is the base angle at said base time
         self.host = host # the planet hosting the satellite
         todayDate = datetime.date.today()
-        self.simulate_orbit_date(todayDate.month, todayDate.day, todayDate.year, True)
+        #self.simulate_orbit_date(todayDate.month, todayDate.day, todayDate.year, True, host)
         print("Planet added")
 
-    def simulate_orbit(self, t): # Function that will determine the position of the planet with an stable increment t variable
+    def simulate_orbit(self, t, host): # Function that will determine the position of the planet with an stable increment t variable
         '''
         Function that simulates the orbit of the satellite incrementally.
 
@@ -125,12 +125,12 @@ class satellite(body): # STILL NEEDS MODIFICATIONS
             self.angle -= 2 * math.pi
         self.inclination = self.maxInclination * math.sin(self.angle - self.longitudeAscendingNode) # gets the current inclination
 
-        self.distance = (self.semiMajorAxis * (1 - math.pow(self.eccentricity, 2))) / (1 + self.eccentricity * math.cos(self.angle - self.longitudePerihelion)) # gets the distance from the sun
-        self.xPos = math.cos(self.angle) * math.cos(self.inclination) * self.distance + self.host.xPos
-        self.yPos = math.sin(self.angle) * math.cos(self.inclination) * self.distance + self.host.yPos
-        self.zPos = math.sin(self.inclination) + self.host.zPos
+        self.distance = (self.semiMajorAxis * (1 - math.pow(self.eccentricity, 2))) / (1 + self.eccentricity * math.cos(self.angle - self.longitudePerihelion)) * 10 # gets the distance from the sun (the * 10 fixes a bug in the main program)
+        self.xPos = math.cos(self.angle) * math.cos(self.inclination) * self.distance + host.xPos
+        self.yPos = math.sin(self.angle) * math.cos(self.inclination) * self.distance + host.yPos
+        self.zPos = math.sin(self.inclination) + host.zPos
 
-    def simulate_orbit_date(self, month, day, year, AD):
+    def simulate_orbit_date(self, month, day, year, AD, host):
         newDate = datetime.date(year, month, day)
         if AD:
             t = (newDate - self.baseDate).days
@@ -138,4 +138,4 @@ class satellite(body): # STILL NEEDS MODIFICATIONS
             t = - ((self.baseDate - datetime.date(1, 1, 1)).days + newDate.year * 365 - (newDate - datetime.date(1, 1, 1)).days)
         self.angle = self.baseAngle
         print(t)
-        self.simulate_orbit(t)
+        self.simulate_orbit(t, host)

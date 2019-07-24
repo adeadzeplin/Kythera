@@ -11,7 +11,6 @@ def load_satellite_database():
 
     cursor.execute("""SELECT * FROM SATELLITE""")
     query_result = cursor.fetchall()
-    print(query_result)
     for i in query_result:
         temp = satellite(i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8], i[9],i[10])
         satellite_list.append(temp)
