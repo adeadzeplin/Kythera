@@ -30,6 +30,28 @@ def simulate_next_satellite_iteration(t): #simulate all the satellites for an in
                 list_of_satellite_names[list_of_satellites.index(satellite)].pos = list_of_satellite_models[list_of_satellites.index(satellite)].pos
                 break
 
+def display_at(year, month, day):
+
+    for planet in list_of_planets:
+        planet.simulate_orbit_date(month, day, year, True)
+        list_of_planet_models[list_of_planets.index(planet)].make_trail = False #disable trail
+        list_of_planet_models[list_of_planets.index(planet)].pos = vp.vector(planet.xPos / 10000000, planet.yPos / 10000000, planet.zPos / 10000000)
+        list_of_planet_names[list_of_planets.index(planet)].pos = list_of_planet_models[list_of_planets.index(planet)].pos
+        list_of_planet_models[list_of_planets.index(planet)].make_trail = True #enable trail
+    for satellite in list_of_satellites:
+        for planet in list_of_planets:
+            if satellite.host == planet.name:
+                satellite.simulate_orbit_date(month, day, year, True, planet)
+                list_of_satellite_models[list_of_satellites.index(satellite)].pos = vp.vector(satellite.xPos / 10000000, satellite.yPos / 10000000, satellite.zPos / 10000000)
+                list_of_satellite_names[list_of_satellites.index(satellite)].pos = list_of_satellite_models[list_of_satellites.index(satellite)].pos
+                break
+    global current_date
+    current_date = datetime.datetime(year = year, month = month, day = day)
+    global pause #pause the simulation after redisplaying the bodies
+    pause = True
+
+
+
 def display():
     """
     # creates the visual representation of the planets
@@ -79,24 +101,27 @@ def display():
 
 def showat():
     global day
-    display_at(day)
+    global month
+    global year
+    #need conditions
+    display_at(year, month, day)
 
 
 def setday(d):
     global day
-    day = d
+    day = d.number
 
 
 def setmonth(m):
     global month
-    month = d
+    month = m.number
 
 def setspeed(s):
     speed = s
 
 def setyear(y):
     global year
-    year = y
+    year = y.number
 
 
 pause = False
@@ -142,7 +167,11 @@ def credits():
     t5 = vp.text(text='Daniel Smith De-Paz', pos=vp.vec(-5,-5,0),color=vp.color.cyan, billboard=True, emissive=True)
     t6 = vp.text(text='Shail Patel ', pos=vp.vec(-7,-7,0),color=vp.color.cyan, billboard=True, emissive=True)
 
-
+#variables used by the showat function
+year = 0
+day = 0
+month = 0
+#setting the scene
 vp.scene.width = 800
 vp.scene.height = 800
 vp.scene.range = 1.3
