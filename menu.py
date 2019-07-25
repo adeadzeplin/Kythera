@@ -2,7 +2,6 @@ from orbitModeling import *
 from load_star_database import load_star_database
 from load_planet_database import load_planet_database
 from load_satellite_database import load_satellite_database
-from hohmann_transfer import *
 import vpython as vp
 import time
 import datetime
@@ -31,6 +30,7 @@ def prediction():
     print(ecl)
     predict = eclipse_predictor(ecl)
     for result in predict:
+        vp.scene.append_to_caption('\n')
         vp.wtext(text=result)
         print(result)
         vp.scene.append_to_caption('\n')
@@ -172,58 +172,17 @@ def Reset():
     vp.button(text="display at", bind=showat, pos=vp.scene.title_anchor)
     vp.scene.append_to_title('\n')
     vp.button(text="credits", bind=credits, pos=vp.scene.title_anchor)
-    vp.winput(bind=setday, pos=vp.scene.title_anchor)
-    vp.winput(bind=setmonth, pos=vp.scene.title_anchor)
-    vp.winput(bind=setyear, pos=vp.scene.title_anchor)
+    vp.scene.append_to_title('\n')
+    vp.winput(bind=seteclipse, pos=vp.scene.title_anchor, text = 'YEAR')
+    vp.button(text="eclipes predictor", bind=prediction, pos=vp.scene.title_anchor)
+    vp.winput(bind=setday, pos=vp.scene.title_anchor, text = 'DAY')
+    vp.winput(bind=setmonth, pos=vp.scene.title_anchor, text = 'MONTH')
+    vp.winput(bind=setyear, pos=vp.scene.title_anchor, text = 'YEAR')
     vp.scene.append_to_title('\n')
     current_date = datetime.datetime.today()
-    guidate = vp.wtext(text="date")
+    guidate = vp.wtext(text=" ")
 
-def setPlanet1(inputOne):
-    global planetOne
-    val1 = inputOne.selected
-    if val1 == "Mercury":
-        planetOne = list_of_planets[0]
-    elif val1 == "Venus":
-        planetOne = list_of_planets[1]
-    elif val1 == "Earth":
-        planetOne = list_of_planets[2]
-    elif val1 == "Mars":
-        planetOne = list_of_planets[3]
-    elif val1 == "Jupiter":
-        planetOne = list_of_planets[4]
-    elif val1 == "Saturn":
-        planetOne = list_of_planets[5]
-    elif val1 == "Uranus":
-        planetOne = list_of_planets[6]
-    elif val1 == "Neptune":
-        planetOne = list_of_planets[7]
-    elif val1 == "Pluto":
-        planetOne = list_of_planets[8]
 
-def setPlanet2(inputTwo):
-    global planetTwo
-    val2 = inputTwo.selected
-    if val2 == "Mercury":
-        planetTwo = list_of_planets[0]
-    elif val2 == "Venus":
-        planetTwo = list_of_planets[1]
-    elif val2 == "Earth":
-        planetTwo = list_of_planets[2]
-    elif val2 == "Mars":
-        planetTwo = list_of_planets[3]
-    elif val2 == "Jupiter":
-        planetTwo = list_of_planets[4]
-    elif val2 == "Saturn":
-        planetTwo = list_of_planets[5]
-    elif val2 == "Uranus":
-        planetTwo = list_of_planets[6]
-    elif val2 == "Neptune":
-        planetTwo = list_of_planets[7]
-    elif val2 == "Pluto":
-        planetTwo = list_of_planets[8]
-def projCalc():
-    orbital_transfer(planetOne,planetTwo)
 
 def credits():
     t0 = vp.text(text='Jacob Jones', pos=vp.vec(5,5,0),color=vp.color.cyan, billboard=True, emissive=True)
@@ -247,13 +206,9 @@ vp.button(text="display", bind=display, pos=vp.scene.title_anchor)
 vp.scene.append_to_title('\n')
 vp.button(text="display at", bind=showat, pos=vp.scene.title_anchor)
 vp.scene.append_to_title('\n')
-vp.button(text="Efficient Projectile estimated date", bind = projCalc, pos = vp.scene.title_anchor)
-planetOne = vp.menu(pos = vp.scene.title_anchor,bind = setPlanet1,choices = ['Mercury','Venus','Earth','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'])
-planetTwo = vp.menu(pos = vp.scene.title_anchor, bind = setPlanet2,choices =['Mercury','Venus','Earth','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'] )
-vp.scene.append_to_title('\n')
 vp.button(text="credits", bind=credits, pos=vp.scene.title_anchor)
 vp.scene.append_to_title('\n')
-eclipse = vp.winput(bind=seteclipse, pos=vp.scene.title_anchor)
+vp.winput(bind=seteclipse, pos=vp.scene.title_anchor)
 vp.button(text="eclipes predictor", bind=prediction, pos=vp.scene.title_anchor)
 vp.scene.append_to_title('\n')
 day = vp.winput(bind=setday, pos=vp.scene.title_anchor)
@@ -263,7 +218,7 @@ vp.scene.append_to_title('\n')
 vp.scene.append_to_caption('\n')
 vp.scene.append_to_caption('\n')
 vp.scene.append_to_caption('\n')
-guidate = vp.wtext(text="date")
+guidate = vp.wtext(text=" ")
 vp.scene.append_to_caption('\n')
 
 
@@ -305,7 +260,7 @@ guiyear = str(current_date.year)
 
 ################################################################################
 
-guidate = vp.wtext(text="date")
+guidate = vp.wtext(text=" ")
 guidate.text = guiday + "/" + guimonth + "/" + guiyear
 
 vp.scene.camera.pos = vp.vector(0, 0, 20)
