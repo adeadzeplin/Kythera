@@ -2,8 +2,7 @@ import datetime
 import sqlite3
 
 # connect to the database
-conn = sqlite3.connect('Database.db')
-c = conn.cursor()
+
 
 def datetime_to_sql(date): #function used to convert a datetime object to a readable sql datetime statement
     sqlCommand = str(date.year) + str(date.month) + str(date.day) + ' ' + str(date.hour) + ':00:00'
@@ -22,6 +21,9 @@ def sql_to_datetime(sqlResult): #funciton used to convert an sql datetime statem
     return equivalentDate
 
 def eclipse_predictor(year):
+    conn = sqlite3.connect('Database')
+    c = conn.cursor()
+
     #sets the starting frame
     startOfYear = datetime.datetime(year = year, month = 1, day = 1, hour = 0)
     endOfYear = datetime.datetime(year = year, month = 12, day = 31, hour = 23)
@@ -62,6 +64,4 @@ def eclipse_predictor(year):
         print(result[1], "eclipse on", result[0])
 
     #returns the result in the form of a 2D array where the datetime object is the first index and the eclipse type is the second index
-    return result
-
-eclipse_predictor(2045)
+    return queryResult
