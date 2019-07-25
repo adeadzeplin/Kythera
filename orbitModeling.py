@@ -125,7 +125,7 @@ class satellite(body): # STILL NEEDS MODIFICATIONS
             self.angle -= 2 * math.pi
         self.inclination = self.maxInclination * math.sin(self.angle - self.longitudeAscendingNode) # gets the current inclination
 
-        self.distance = (self.semiMajorAxis * (1 - math.pow(self.eccentricity, 2))) / (1 + self.eccentricity * math.cos(self.angle - self.longitudePerihelion)) * 10 # gets the distance from the sun (the * 10 fixes a bug in the main program)
+        self.distance = (self.semiMajorAxis * (1 - math.pow(self.eccentricity, 2))) / (1 + self.eccentricity * math.cos(self.angle - self.longitudePerihelion)) * 30 # gets the distance from the sun (the * 30 fixes a bug in the main program)
         self.xPos = math.cos(self.angle) * math.cos(self.inclination) * self.distance + host.xPos
         self.yPos = math.sin(self.angle) * math.cos(self.inclination) * self.distance + host.yPos
         self.zPos = math.sin(self.inclination) + host.zPos

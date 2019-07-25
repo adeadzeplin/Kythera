@@ -6,6 +6,7 @@ from hohmann_transfer import *
 import vpython as vp
 import time
 import datetime
+import webbrowser
 from eclipse_predictor import *
 
 from setup_master_database import setup_master_database
@@ -54,7 +55,10 @@ def simulate_next_satellite_iteration(t): #simulate all the satellites for an in
                 break
 
 def display_at(year, month, day):
-
+    global pause #pause the simulation after redisplaying the bodies
+    pause = True
+    global current_date
+    current_date = datetime.datetime(year = year, month = month, day = day)
     for planet in list_of_planets:
         planet.simulate_orbit_date(month, day, year, True)
         list_of_planet_models[list_of_planets.index(planet)].make_trail = False #disable trail
@@ -68,11 +72,6 @@ def display_at(year, month, day):
                 list_of_satellite_models[list_of_satellites.index(satellite)].pos = vp.vector(satellite.xPos / 10000000, satellite.yPos / 10000000, satellite.zPos / 10000000)
                 list_of_satellite_names[list_of_satellites.index(satellite)].pos = list_of_satellite_models[list_of_satellites.index(satellite)].pos
                 break
-    global current_date
-    current_date = datetime.datetime(year = year, month = month, day = day)
-    global pause #pause the simulation after redisplaying the bodies
-    pause = True
-
 
 
 def start():
@@ -88,6 +87,14 @@ def start():
     #    mercury = vp.sphere(color = vp.vector(.3,.3,.3), pos = vp.vector(celestpos[0] / 10000000,celestpos[0] / 10000000,celestpos[0] / 10000000), make_trail=True, trail_type="points", interval=10, retain=5)
     #    moon = vp.sphere(color = vp.vector(.3,.3,.3), pos = vp.vector(Moon.xPos / 10000000, Moon.yPos / 10000000,0))
     """
+    #to remove the start button
+    global start_text1
+    global start_text2
+    global start_button
+    start_text1.text = ""
+    start_text2.text = ""
+    start_button.delete()
+    #the real function
     global guidate
     global current_date
     while True:
@@ -195,14 +202,12 @@ def setdate(date):
     dateString = date.text
     if len(dateString) != 10:
         dateErrorText.text = "     >> This date is invalid!"
+        return
     else:
          dateErrorText.text = "\n"
-    month = int(dateString[0:1])
-    day = int(dateString[3:4])
+    month = int(dateString[0:-8])
+    day = int(dateString[3:-5])
     year = int(dateString[6:])
-    display_at(year, month, day)
-
-
     display_at(year, month, day)
 
 
@@ -229,18 +234,7 @@ def Reset():
     vp.scene.width = 800
     vp.scene.height = 800
     vp.scene.range = 1.3
-    vp.scene.title = "ANTIKYTHERA\n"
-    vp.button(text="display", bind=display, pos=vp.scene.title_anchor)
     vp.scene.append_to_title('\n')
-    vp.button(text="display at", bind=showat, pos=vp.scene.title_anchor)
-    vp.scene.append_to_title('\n')
-    vp.button(text="credits", bind=credits, pos=vp.scene.title_anchor)
-    vp.scene.append_to_title('\n')
-    vp.winput(bind=seteclipse, pos=vp.scene.title_anchor, text = 'YEAR')
-    vp.button(text="eclipes predictor", bind=prediction, pos=vp.scene.title_anchor)
-    vp.scene.append_to_title('\n')
-    current_date = datetime.datetime.today()
-    guidate = vp.wtext(text=" ")
 
 
 
@@ -252,6 +246,8 @@ def credits():
     t4 = vp.text(text='Akshar Patel', pos=vp.vec(-3,-3,0),color=vp.color.cyan, billboard=True, emissive=True)
     t5 = vp.text(text='Daniel Smith De-Paz', pos=vp.vec(-5,-5,0),color=vp.color.cyan, billboard=True, emissive=True)
     t6 = vp.text(text='Shail Patel ', pos=vp.vec(-7,-7,0),color=vp.color.cyan, billboard=True, emissive=True)
+    time.sleep(2)
+    webbrowser.open_new("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
 
 #variables used by the showat function
 year = 0
@@ -276,13 +272,14 @@ vp.button(text="credits", bind=credits, pos=vp.scene.title_anchor)
 vp.wtext(text = "--------------------------------------------------------------\n")
 vp.wtext(text = "                      SOLAR SYSTEM SIMULATOR \n")
 vp.wtext(text = "--------------------------------------------------------------\n")
-vp.wtext(text = "\nPress ")
-vp.button(text="Start", bind=start)
-vp.wtext(text = " to start the simulation\n")
+start_text1 = vp.wtext(text = "\nPress ")
+start_button = vp.button(text="Start", bind=start)
+start_text2 = vp.wtext(text = " to start the simulation\n")
 vp.wtext(text = "\nEnter a date in 'mm/dd/yyyy' ")
 vp.winput(bind=setdate, type="string")
 vp.wtext(text = " and press the 'Enter' key to simulate the system at that time")
 dateErrorText = vp.wtext(text = "\n")
+vp.wtext(text = "\nThe simulation will pause at that date, and you will have to resume it\n")
 vp.wtext(text = "\nThis is the current date: \n")
 vp.wtext(text = "-----------------\n")
 guidate = vp.wtext(text=" ")
@@ -303,7 +300,7 @@ for planet in list_of_planets:
     planet.simulate_orbit(0)
     list_of_planet_models.append(vp.sphere(textures=vp.textures.earth,
                      pos=vp.vector(planet.xPos / 10000000, planet.yPos / 10000000, planet.zPos / 10000000),
-                     make_trail=True, trail_type="curve", interval=10, retain=50, radius = 0.1))
+                     make_trail=True, trail_type="curve", interval=10, retain=50, radius = 0.3))
     list_of_planet_names.append(vp.label(text = planet.name, pos = list_of_planet_models[list_of_planets.index(planet)].pos, height = 15, yoffset = 50, space = 30, border = 4, font = 'sans'))
 for satellite in list_of_satellites:
     for planet in list_of_planets:
@@ -311,7 +308,7 @@ for satellite in list_of_satellites:
             satellite.simulate_orbit(0, planet)
             list_of_satellite_models.append(vp.sphere(textures=vp.textures.earth,
                             pos=vp.vector(satellite.xPos / 10000000, satellite.yPos / 10000000, satellite.zPos / 10000000),
-                            make_trail=False, radius = 0.03))
+                            make_trail=False, radius = 0.1))
             list_of_satellite_names.append(vp.label(text = satellite.name, pos = list_of_satellite_models[list_of_satellites.index(satellite)].pos, height = 15, yoffset = 50, space = 30, border = 4, font = 'sans'))
             break
 ############################################################################
