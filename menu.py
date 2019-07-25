@@ -30,6 +30,7 @@ def prediction():
     print(ecl)
     predict = eclipse_predictor(ecl)
     for result in predict:
+        vp.scene.append_to_caption('\n')
         vp.wtext(text=result)
         print(result)
         vp.scene.append_to_caption('\n')
