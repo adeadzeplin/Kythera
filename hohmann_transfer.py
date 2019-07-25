@@ -5,6 +5,8 @@ import datetime
 def orbital_transfer(launchPlanet, landPlanet): # function to determine the perfect time to efficiently launch a projectile to other orbits
     # The goal is to form a rough ellipse passing through both orbits, then use Kepler's principles to determine the rest
 
+    if launchPlanet == landPlanet:
+        return("These are the same planets :>")
     ###################################################################
     # START BY SIMULATING ALL THE PLANETS IN THE SYSTEM AT TODAY'S TIME
     ###################################################################
@@ -33,6 +35,7 @@ def orbital_transfer(launchPlanet, landPlanet): # function to determine the perf
     nearestLaunchDate = datetime.date.today() + datetime.timedelta(days = math.floor(time))
     print(nearestLaunchDate)
 
+    return (landPlanet.name + " should be at an angle of " + str(angleDeviation * 180 / math.pi) + " degrees from " + launchPlanet.name + "\nThe nearest date this occurs is " + str(nearestLaunchDate.month) + "/" + str(nearestLaunchDate.day) + "/" + str(nearestLaunchDate.year))
 
 # testing
 #Sun = orb.star(1.989 * math.pow(10, 30))

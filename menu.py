@@ -10,6 +10,8 @@ from eclipse_predictor import *
 
 from setup_master_database import setup_master_database
 setup_master_database()
+
+#used by the main simulation system
 list_of_planets = load_planet_database()
 list_of_satellites = load_satellite_database()
 list_of_planet_models = []
@@ -18,27 +20,30 @@ list_of_planet_names = []
 list_of_planet_angles = []
 list_of_satellite_names = []
 
+
+#used by eclipse prediction system
+list_of_eclipse_predictions = []
+
 def simulate_next_planet_iteration(t): #simulates all the planets for an increment t
     for planet in list_of_planets:
         planet.simulate_orbit(t)
         list_of_planet_models[list_of_planets.index(planet)].pos = vp.vector(planet.xPos / 10000000, planet.yPos / 10000000, planet.zPos / 10000000)
         list_of_planet_names[list_of_planets.index(planet)].pos = list_of_planet_models[list_of_planets.index(planet)].pos
 
-        
 
-def prediction():
-    global ecl
-    print(ecl)
-    predict = eclipse_predictor(ecl)
-    for result in predict:
-        vp.wtext(text=result)
-        print(result)
-        vp.scene.append_to_caption('\n')
+
+def prediction(year):
+    clear_eclipses()
+    global list_of_eclipse_predictions
+    predict = eclipse_predictor(year.number)
+    for i in range(len(predict)):
+        list_of_eclipse_predictions[i].text = ("\n" + predict[i] + "\n")
+        print(predict[i])
 
 
 eclipses ='eclipses'
-        
-        
+
+
 def simulate_next_satellite_iteration(t): #simulate all the satellites for an increment t
     for satellite in list_of_satellites:
         for planet in list_of_planets:
@@ -70,7 +75,7 @@ def display_at(year, month, day):
 
 
 
-def display():
+def start():
     """
     # creates the visual representation of the planets
     earth = vp.sphere(texture=vp.textures.earth,
@@ -90,7 +95,7 @@ def display():
             guiday = str(current_date.day)
             guimonth = str(current_date.month)
             guiyear = str(current_date.year)
-            guidate.text = guiday + "/" + guimonth + "/" + guiyear
+            guidate.text = "| " + guiday + "/" + guimonth + "/" + guiyear + " |\n"
 
             simulate_next_planet_iteration(sl.value)
             simulate_next_satellite_iteration(sl.value)
@@ -117,68 +122,7 @@ def display():
             current_date = current_date + date_increment
 
 
-def showat():
-    global day
-    global month
-    global year
-    #need conditions
-    display_at(year, month, day)
-
-
-def setday(d):
-    global day
-    day = d.number
-
-
-def setmonth(m):
-    global month
-    month = m.number
-
-def setspeed(s):
-    speed = s
-
-def setyear(y):
-    global year
-    year = y.number
-
-
-pause = False
-
-t = 0
-
-day = 0
-
-ecl = 0
-def seteclipse(e):
-    global ecl
-    ecl = e.number
-
-
-def Pause():
-    global pause
-    pause = True
-
-def Play():
-    global pause
-    pause  = False
-
-def Reset():
-    vp.scene.width = 800
-    vp.scene.height = 800
-    vp.scene.range = 1.3
-    vp.scene.title = "ANTIKYTHERA\n"
-    vp.button(text="display", bind=display, pos=vp.scene.title_anchor)
-    vp.scene.append_to_title('\n')
-    vp.button(text="display at", bind=showat, pos=vp.scene.title_anchor)
-    vp.scene.append_to_title('\n')
-    vp.button(text="credits", bind=credits, pos=vp.scene.title_anchor)
-    vp.winput(bind=setday, pos=vp.scene.title_anchor)
-    vp.winput(bind=setmonth, pos=vp.scene.title_anchor)
-    vp.winput(bind=setyear, pos=vp.scene.title_anchor)
-    vp.scene.append_to_title('\n')
-    current_date = datetime.datetime.today()
-    guidate = vp.wtext(text="date")
-
+#Hohmann Transfer Data
 def setPlanet1(inputOne):
     global planetOne
     val1 = inputOne.selected
@@ -222,8 +166,83 @@ def setPlanet2(inputTwo):
         planetTwo = list_of_planets[7]
     elif val2 == "Pluto":
         planetTwo = list_of_planets[8]
+
 def projCalc():
-    orbital_transfer(planetOne,planetTwo)
+    clear_hohmann()
+    global hohmann_result
+    pause = True #so it doesn't mess the trajectory up
+    hohmann_result.text = "\n\n" + orbital_transfer(planetOne,planetTwo)
+    pause = False
+
+def clear_eclipses():
+    for element in list_of_eclipse_predictions:
+        element.text = ""
+
+def clear_hohmann():
+    global hohmann_result
+    hohmann_result.text = ""
+
+
+def showat():
+    global day
+    global month
+    global year
+    #need conditions
+    display_at(year, month, day)
+
+
+def setdate(date):
+    dateString = date.text
+    if len(dateString) != 10:
+        dateErrorText.text = "     >> This date is invalid!"
+    else:
+         dateErrorText.text = "\n"
+    month = int(dateString[0:1])
+    day = int(dateString[3:4])
+    year = int(dateString[6:])
+    display_at(year, month, day)
+
+
+    display_at(year, month, day)
+
+
+def setspeed(s):
+    speed = s
+
+
+
+pause = False
+
+t = 0
+
+day = 0
+
+def Pause():
+    global pause
+    pause = True
+
+def Play():
+    global pause
+    pause  = False
+
+def Reset():
+    vp.scene.width = 800
+    vp.scene.height = 800
+    vp.scene.range = 1.3
+    vp.scene.title = "ANTIKYTHERA\n"
+    vp.button(text="display", bind=display, pos=vp.scene.title_anchor)
+    vp.scene.append_to_title('\n')
+    vp.button(text="display at", bind=showat, pos=vp.scene.title_anchor)
+    vp.scene.append_to_title('\n')
+    vp.button(text="credits", bind=credits, pos=vp.scene.title_anchor)
+    vp.scene.append_to_title('\n')
+    vp.winput(bind=seteclipse, pos=vp.scene.title_anchor, text = 'YEAR')
+    vp.button(text="eclipes predictor", bind=prediction, pos=vp.scene.title_anchor)
+    vp.scene.append_to_title('\n')
+    current_date = datetime.datetime.today()
+    guidate = vp.wtext(text=" ")
+
+
 
 def credits():
     t0 = vp.text(text='Jacob Jones', pos=vp.vec(5,5,0),color=vp.color.cyan, billboard=True, emissive=True)
@@ -238,48 +257,48 @@ def credits():
 year = 0
 day = 0
 month = 0
+#variables used for simulation control
+current_date = datetime.datetime.today() # current date of the simulation
+guiday = str(current_date.day)
+guimonth = str(current_date.month)
+guiyear = str(current_date.year)
 #setting the scene
 vp.scene.width = 800
 vp.scene.height = 800
 vp.scene.range = 1.3
 vp.scene.title = "ANTIKYTHERA\n"
-vp.button(text="display", bind=display, pos=vp.scene.title_anchor)
+#vp.scene.append_to_title('\n')
 vp.scene.append_to_title('\n')
-vp.button(text="display at", bind=showat, pos=vp.scene.title_anchor)
-vp.scene.append_to_title('\n')
-vp.button(text="Efficient Projectile estimated date", bind = projCalc, pos = vp.scene.title_anchor)
-planetOne = vp.menu(pos = vp.scene.title_anchor,bind = setPlanet1,choices = ['Mercury','Venus','Earth','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'])
-planetTwo = vp.menu(pos = vp.scene.title_anchor, bind = setPlanet2,choices =['Mercury','Venus','Earth','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'] )
-vp.scene.append_to_title('\n')
+#vp.scene.append_to_title('\n')
 vp.button(text="credits", bind=credits, pos=vp.scene.title_anchor)
-vp.scene.append_to_title('\n')
-eclipse = vp.winput(bind=seteclipse, pos=vp.scene.title_anchor)
-vp.button(text="eclipes predictor", bind=prediction, pos=vp.scene.title_anchor)
-vp.scene.append_to_title('\n')
-day = vp.winput(bind=setday, pos=vp.scene.title_anchor)
-month = vp.winput(bind=setmonth, pos=vp.scene.title_anchor)
-year = vp.winput(bind=setyear, pos=vp.scene.title_anchor)
-vp.scene.append_to_title('\n')
-vp.scene.append_to_caption('\n')
-vp.scene.append_to_caption('\n')
-vp.scene.append_to_caption('\n')
-guidate = vp.wtext(text="date")
-vp.scene.append_to_caption('\n')
+#vp.scene.append_to_title('\n')
+#vp.scene.append_to_title('\n')
+vp.wtext(text = "--------------------------------------------------------------\n")
+vp.wtext(text = "                      SOLAR SYSTEM SIMULATOR \n")
+vp.wtext(text = "--------------------------------------------------------------\n")
+vp.wtext(text = "\nPress ")
+vp.button(text="Start", bind=start)
+vp.wtext(text = " to start the simulation\n")
+vp.wtext(text = "\nEnter a date in 'mm/dd/yyyy' ")
+vp.winput(bind=setdate, type="string")
+vp.wtext(text = " and press the 'Enter' key to simulate the system at that time")
+dateErrorText = vp.wtext(text = "\n")
+vp.wtext(text = "\nThis is the current date: \n")
+vp.wtext(text = "-----------------\n")
+guidate = vp.wtext(text=" ")
+guidate.text = "| " + guiday + "/" + guimonth + "/" + guiyear + " |\n"
+vp.wtext(text = "-----------------\n")
+vp.wtext(text = "\nControl the runtime using the buttons and slider below: \n")
 
 
 ################################################################################
-vp.scene.append_to_title('\n')
-vp.scene.append_to_caption('\n')
 vp.button(text="Pause", bind=Pause)
 vp.button(text="Play", bind=Play)
 vp.button(text="Reset", bind=Reset)
-vp.scene.append_to_caption('\n')
-vp.scene.append_to_caption('\n')
 # makes the sun shine
 vp.sphere(color=vp.color.yellow, emissive=True, radius = 1)
 vp.local_light(pos=vp.vector(0, 0, 0), color=vp.color.yellow)
 ############## Setting body models initial values ##########################
-current_date = datetime.datetime.today() # current date of the simulation
 for planet in list_of_planets:
     planet.simulate_orbit(0)
     list_of_planet_models.append(vp.sphere(textures=vp.textures.earth,
@@ -296,16 +315,34 @@ for satellite in list_of_satellites:
             list_of_satellite_names.append(vp.label(text = satellite.name, pos = list_of_satellite_models[list_of_satellites.index(satellite)].pos, height = 15, yoffset = 50, space = 30, border = 4, font = 'sans'))
             break
 ############################################################################
-vp.scene.append_to_caption('\n')
 sl = vp.slider(min=-3, max=3, value=0.5, length=675, bind=setspeed)
-
-guiday = str(current_date.day)
-guimonth = str(current_date.month)
-guiyear = str(current_date.year)
 
 ################################################################################
 
-guidate = vp.wtext(text="date")
-guidate.text = guiday + "/" + guimonth + "/" + guiyear
-
 vp.scene.camera.pos = vp.vector(0, 0, 20)
+
+vp.scene.append_to_caption('\n')
+vp.scene.append_to_caption('\n')
+vp.wtext(text = "--------------------------------------------------------------\n")
+vp.wtext(text = "                      ECLIPSE PREDICTOR \n")
+vp.wtext(text = "--------------------------------------------------------------\n")
+vp.wtext(text = "\nEnter a year to predict eclipses in:  ")
+vp.winput(bind=prediction)
+vp.wtext(text = "  and press the 'Enter' key    ")
+vp.wtext(text="\n ")
+for i in range(7):
+    list_of_eclipse_predictions.append(vp.wtext(text=""))
+
+planetOne = list_of_planets[0]
+planetTwo = list_of_planets[0]
+vp.wtext(text = "\n\n\n--------------------------------------------------------------\n")
+vp.wtext(text = "                PLANETARY TRANSFER ESTIMATOR \n")
+vp.wtext(text = "--------------------------------------------------------------\n")
+#for Hohmann Transfers
+vp.wtext(text = "Transfer from ")
+vp.menu(bind = setPlanet1,choices = ['Mercury','Venus','Earth','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'])
+vp.wtext(text = " to ")
+vp.menu(bind = setPlanet2,choices =['Mercury','Venus','Earth','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'] )
+vp.wtext(text = "    ")
+vp.button(text="Efficient Projectile estimated date", bind = projCalc)
+hohmann_result = vp.wtext(text = "")

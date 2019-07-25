@@ -15,7 +15,6 @@ def load_planet_database():
 
     cursor.execute("""SELECT * FROM PLANET""")
     query_result = cursor.fetchall()
-    print( query_result)
     for i in query_result:
         temp = planet(i[0],i[1],i[2],i[3],i[4],i[5],i[6],i[7],i[8],i[9])
         planet_list.append(temp)

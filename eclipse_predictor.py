@@ -2,8 +2,7 @@ import datetime
 import sqlite3
 
 # connect to the database
-conn = sqlite3.connect('Database.db')
-c = conn.cursor()
+
 
 def datetime_to_sql(date): #function used to convert a datetime object to a readable sql datetime statement
     sqlCommand = str(date.year) + str(date.month) + str(date.day) + ' ' + str(date.hour) + ':00:00'
@@ -22,6 +21,9 @@ def sql_to_datetime(sqlResult): #funciton used to convert an sql datetime statem
     return equivalentDate
 
 def eclipse_predictor(year):
+    conn = sqlite3.connect('Database')
+    c = conn.cursor()
+
     #sets the starting frame
     startOfYear = datetime.datetime(year = year, month = 1, day = 1, hour = 0)
     endOfYear = datetime.datetime(year = year, month = 12, day = 31, hour = 23)
@@ -39,10 +41,11 @@ def eclipse_predictor(year):
         if startOfYear > DatabaseEnd:
             startOfYear -= offset
             endOfYear -= offset
+            times +=1
         else:
             startOfYear += offset
             endOfYear += offset
-        times += 1
+            times -= 1
 
     sqlStartOfYear = datetime_to_sql(startOfYear)
     sqlEndOfYear = datetime_to_sql(endOfYear)
@@ -51,7 +54,7 @@ def eclipse_predictor(year):
     c.execute("Select * From Eclipse Where Date between '" + sqlStartOfYear +"' and '" + sqlEndOfYear + "'")
     queryResult = c.fetchall()
     #print("Select * From Eclipse Where Date between '" + sqlStartOfYear +"' and '" + sqlEndOfYear + "'")
-
+    finalResult = []
     for result in queryResult:
         newResult = []
         print(result)
@@ -59,9 +62,8 @@ def eclipse_predictor(year):
         newResult.append(newDateTime)
         newResult.append(result[1])
         result = newResult
+        finalResult.append("-> "+ result[1] + " eclipse on " + str(result[0].month) + "-" + str(result[0].day) + "-" + str(result[0].year) + " at " + str(result[0].hour))
         print(result[1], "eclipse on", result[0])
 
     #returns the result in the form of a 2D array where the datetime object is the first index and the eclipse type is the second index
-    return result
-
-eclipse_predictor(2045)
+    return finalResult
