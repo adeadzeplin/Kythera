@@ -177,7 +177,7 @@ def Reset():
     vp.winput(bind=setyear, pos=vp.scene.title_anchor)
     vp.scene.append_to_title('\n')
     current_date = datetime.datetime.today()
-    guidate = vp.wtext(text="date")
+    guidate = vp.wtext(text=" ")
 
 
 
@@ -215,7 +215,7 @@ vp.scene.append_to_title('\n')
 vp.scene.append_to_caption('\n')
 vp.scene.append_to_caption('\n')
 vp.scene.append_to_caption('\n')
-guidate = vp.wtext(text="date")
+guidate = vp.wtext(text=" ")
 vp.scene.append_to_caption('\n')
 
 
@@ -257,7 +257,7 @@ guiyear = str(current_date.year)
 
 ################################################################################
 
-guidate = vp.wtext(text="date")
+guidate = vp.wtext(text=" ")
 guidate.text = guiday + "/" + guimonth + "/" + guiyear
 
 vp.scene.camera.pos = vp.vector(0, 0, 20)
