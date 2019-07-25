@@ -5,6 +5,8 @@ from load_satellite_database import load_satellite_database
 import vpython as vp
 import time
 import datetime
+from eclipse_predictor import *
+
 from setup_master_database import setup_master_database
 setup_master_database()
 list_of_planets = load_planet_database()
@@ -21,6 +23,21 @@ def simulate_next_planet_iteration(t): #simulates all the planets for an increme
         list_of_planet_models[list_of_planets.index(planet)].pos = vp.vector(planet.xPos / 10000000, planet.yPos / 10000000, planet.zPos / 10000000)
         list_of_planet_names[list_of_planets.index(planet)].pos = list_of_planet_models[list_of_planets.index(planet)].pos
 
+        
+
+def prediction():
+    global ecl
+    print(ecl)
+    predict = eclipse_predictor(ecl)
+    for result in predict:
+        vp.wtext(text=result)
+        print(result)
+        vp.scene.append_to_caption('\n')
+
+
+eclipses ='eclipses'
+        
+        
 def simulate_next_satellite_iteration(t): #simulate all the satellites for an increment t
     for satellite in list_of_satellites:
         for planet in list_of_planets:
@@ -130,6 +147,11 @@ t = 0
 
 day = 0
 
+ecl = 0
+def seteclipse(e):
+    global ecl
+    ecl = e.number
+
 
 def Pause():
     global pause
@@ -181,11 +203,20 @@ vp.scene.append_to_title('\n')
 vp.button(text="display at", bind=showat, pos=vp.scene.title_anchor)
 vp.scene.append_to_title('\n')
 vp.button(text="credits", bind=credits, pos=vp.scene.title_anchor)
-vp.winput(bind=setday, pos=vp.scene.title_anchor)
-vp.winput(bind=setmonth, pos=vp.scene.title_anchor)
-vp.winput(bind=setyear, pos=vp.scene.title_anchor)
 vp.scene.append_to_title('\n')
+eclipse = vp.winput(bind=seteclipse, pos=vp.scene.title_anchor)
+vp.button(text="eclipes predictor", bind=prediction, pos=vp.scene.title_anchor)
 vp.scene.append_to_title('\n')
+day = vp.winput(bind=setday, pos=vp.scene.title_anchor)
+month = vp.winput(bind=setmonth, pos=vp.scene.title_anchor)
+year = vp.winput(bind=setyear, pos=vp.scene.title_anchor)
+vp.scene.append_to_title('\n')
+vp.scene.append_to_caption('\n')
+vp.scene.append_to_caption('\n')
+vp.scene.append_to_caption('\n')
+guidate = vp.wtext(text="date")
+vp.scene.append_to_caption('\n')
+
 
 ################################################################################
 vp.scene.append_to_title('\n')
