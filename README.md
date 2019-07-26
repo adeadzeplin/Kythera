@@ -1,4 +1,4 @@
-This is a readme for Carpenter or any other user of this program This is a Beta Version of the Antikythera Model. All designs within are not final. This program simulates the orbits of the planets in the solar system. It was designed in 3D, and as such the orbits are realistically modelled, happening at different angles
+This is a Beta Version of the Antikythera Model. All designs within are not final. This program simulates the orbits of the planets in the solar system. It was designed in 3D, and as such the orbits are realistically modelled, happening at different angles
 
 TO RUN THE PROGRAM:
 
