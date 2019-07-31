@@ -1,6 +1,6 @@
 This is a Beta Version of the Antikythera Model. All designs within are not final. This program simulates the orbits of the planets in the solar system. It was designed in 3D, and as such the orbits are realistically modelled, happening at different angles
 
-TO RUN THE PROGRAM:
+RUN PROGRAM INSTRUCTIONS:
 
 1 - Download the repository into a .zip file
 
@@ -8,7 +8,9 @@ TO RUN THE PROGRAM:
 
 3 - Double click the "Run_Kythera.bat" file
 
-4 - Leave the console window open to run
+4 - If it returns an error regarding python 3.7 not being installed follow the steps to install it here: https://realpython.com/installing-python/#step-1-download-the-python-3-installer
+
+5 - Attempt step 3 again. If it still fails contact smithdepazd@wit.edu
 
 TO END THE PROGAM:
 
